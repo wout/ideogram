@@ -22,6 +22,8 @@
 public class MainWindow : Gtk.Window {
     private Gtk.Entry entry;
     private bool is_terminal = Posix.isatty (Posix.STDIN_FILENO);
+    private Gtk.Clipboard clipboard;
+    private string clipboard_text;
 
     public MainWindow (Gtk.Application application) {
         Object (
@@ -41,6 +43,12 @@ public class MainWindow : Gtk.Window {
 
         stick ();
         set_keep_above (true);
+
+        clipboard = Gtk.Clipboard.get_for_display (
+            get_display (),
+            Gdk.SELECTION_CLIPBOARD
+        );
+        store_clipboard ();
 
         entry = new Gtk.Entry ();
         entry.halign = Gtk.Align.CENTER;
@@ -74,7 +82,6 @@ public class MainWindow : Gtk.Window {
         entry.grab_focus ();
 
         entry.changed.connect (() => {
-            var clipboard = Gtk.Clipboard.get_for_display (entry.get_display (), Gdk.SELECTION_CLIPBOARD);
             clipboard.set_text (entry.text, -1);
             paste ();
             queue_close ();
@@ -112,9 +119,20 @@ public class MainWindow : Gtk.Window {
         // Wait 500ms to ensure paste was successful
         Timeout.add (500, () => {
             close ();
+            restore_clipboard ();
 
             return false;
         });
+    }
+
+    private void store_clipboard () {
+        clipboard_text = clipboard.wait_for_text ();
+    }
+
+    private void restore_clipboard () {
+        if (clipboard_text != null) {
+            clipboard.set_text (clipboard_text, -1);
+        }
     }
 
     private static void perform_key_event (string accelerator, bool press, ulong delay) {
