@@ -36,9 +36,9 @@ If you want to hack on and build Ideogram yourself, you'll need the following de
 * meson
 * valac
 
-Run `meson build` to configure the build environment and run `ninja test` to build and run automated tests
+Run `meson setup build` to configure the build environment and run `ninja test` to build and run automated tests
 
-    meson build --prefix=/usr
+    meson setup build --prefix=/usr
     cd build
     ninja test
 
