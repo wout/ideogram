@@ -41,7 +41,9 @@ class CustomShortcutSettings : Object {
         return RELOCATABLE_SCHEMA_PATH_TEMLPATE.printf (i);
     }
 
-    static GLib.Settings? get_relocatable_schema_settings (string relocatable_schema) {
+    static GLib.Settings? get_relocatable_schema_settings (
+        string relocatable_schema
+    ) {
         return new GLib.Settings.with_path (SCHEMA + "." + KEY, relocatable_schema);
     }
 
