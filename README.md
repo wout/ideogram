@@ -12,7 +12,7 @@
 
 ## Insert emoji anywhere, even in non-native apps
 
-Quickly insert emoji anywhere you can paste text, including non-native apps. Hit ⌘+E to open the emoji picker, choose the emoji you want, and it's instantly pasted. 👍 Change the shortcut in System Settings → Keyboard → Shortcuts → Custom.
+Quickly insert emoji anywhere you can paste text, including non-native apps. Hit ⌘+E to open the emoji picker, choose the emoji you want, and paste it. 👍 Change the shortcut in System Settings → Keyboard → Shortcuts → Custom.
 
 ## About the Emoji Picker
 

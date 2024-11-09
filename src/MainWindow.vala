@@ -20,6 +20,7 @@
 */
 public class MainWindow : Gtk.Window {
     private Gtk.Entry entry;
+    private Gdk.Clipboard clipboard;
     private bool is_terminal = Posix.isatty(Posix.STDIN_FILENO);
 
     public MainWindow(Gtk.Application application) {
@@ -45,6 +46,9 @@ public class MainWindow : Gtk.Window {
         entry.halign = Gtk.Align.CENTER;
         entry.width_request = entry.height_request = 0;
         entry.get_style_context().add_class("hidden");
+
+        this.clipboard = entry.get_clipboard ();
+        this.clipboard.changed.connect (this.on_clipboard_changed);
 
         var title = new Gtk.Label(_("Select Emoji to Insert"));
         title.get_style_context().add_class(Granite.STYLE_CLASS_H1_LABEL);
@@ -94,11 +98,20 @@ public class MainWindow : Gtk.Window {
         entry.insert_emoji();
     }
 
+    private void on_clipboard_changed () {
+        clipboard.read_text_async.begin (null, (obj, res) => {
+            try {
+                var content = clipboard.read_text_async.end (res);
+                // Only load text from clipboard when the app starts
+                this.clipboard.changed.disconnect(this.on_clipboard_changed);
+                this.entry.text = content;
+            } catch (GLib.Error err) {
+                stderr.printf ("Error: %s", err.message);
+            }
+        });
+    }
+
     private void insert_emoji(string emoji) {
-        var clipboard = Gtk.Clipboard.get_for_display(
-            get_display(),
-            Gdk.SELECTION_CLIPBOARD
-        );
         clipboard.set_text(emoji, -1);
         queue_close();
     }
